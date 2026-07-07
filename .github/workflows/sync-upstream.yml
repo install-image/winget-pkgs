@@ -15,12 +15,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Add upstream
+      - name: 拉取上游官方仓库代码
         run: |
           git remote add upstream https://github.com/microsoft/winget-pkgs.git
-
-      - name: Sync upstream
-        run: |
           git fetch upstream
-          git checkout -B master upstream/master
-          git push origin master --force
+          git checkout main
+          git reset --hard upstream/main
+          # 保护本地Workflow不被上游覆盖，避免权限报错
+          git checkout HEAD -- .github/workflows
+          git push origin main --force-with-lease
