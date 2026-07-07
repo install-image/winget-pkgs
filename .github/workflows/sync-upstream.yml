@@ -1,25 +1,44 @@
-name: 同步上游微软 winget-pkgs
-# 定时每天8点自动执行，也支持手动点击触发
+name: Sync GitHub Source To Gitee
 on:
+  # 每天8点同步
   schedule:
-    - cron: '0 1 * * *'
+    - cron: "0 8 * * *"
+  # 手动运行
   workflow_dispatch:
-
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: 拉取当前仓库代码
+      # 拉取你的GitHub仓库
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: 绑定上游官方仓库
-        run: git remote add upstream https://github.com/microsoft/winget-pkgs.git
-
-      - name: 拉取上游全部更新，覆盖本地main分支
+      # 添加上游GitHub项目
+      - name: Add upstream
+        run: |
+          git remote add upstream \
+          https://github.com/microsoft/winget-pkgs.git
+      # 同步上游代码到自己的GitHub
+      - name: Sync upstream
         run: |
           git fetch upstream
-          git checkout main
-          git reset --hard upstream/main
-          git push origin main --force-with-lease
+          git checkout -B main upstream/main
+          git push origin main --force
+
+      # 配置Gitee SSH
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.GITEE_SSH_PRIVATE }}
+
+      # 推送到Gitee
+      - name: Push Gitee
+        run: |
+          git remote remove gitee || true
+          git remote add gitee \
+          git@gitee.com:你的用户名/winget-pkgs.git
+          git push gitee main --force
+
+
+          git push gitee --tags --force
