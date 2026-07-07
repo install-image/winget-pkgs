@@ -19,7 +19,7 @@ jobs:
         run: |
           git remote add upstream https://github.com/microsoft/winget-pkgs.git
           git fetch upstream
-          git checkout main
+          git checkout master
           git reset --hard upstream/main
           # 保护本地Workflow不被上游覆盖，避免权限报错
           git checkout HEAD -- .github/workflows
