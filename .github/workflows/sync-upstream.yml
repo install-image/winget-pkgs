@@ -1,9 +1,8 @@
-name: Sync upstream GitHub
+name: Sync winget-pkgs
 
 on:
   schedule:
-    - cron: "0 8 * * *"
-  workflow_dispatch:
+    - cron: "0 */6 * * *"
 
 jobs:
   sync:
@@ -12,15 +11,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: 拉取上游官方仓库代码
+      - name: Sync upstream
         run: |
-          git remote add upstream https://github.com/microsoft/winget-pkgs.git
+          git remote add upstream https://github.com/microsoft/winget-pkgs.git || true
+
           git fetch upstream
+
           git checkout master
-          git reset --hard upstream/main
-          # 保护本地Workflow不被上游覆盖，避免权限报错
-          git checkout HEAD -- .github/workflows
-          git push origin main --force-with-lease
+
+          git reset --hard upstream/master
+
+          git push origin master --force
