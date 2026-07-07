@@ -1,0 +1,27 @@
+name: 同步微软官方winget-pkgs
+on:
+  schedule:
+    - cron: '0 1 * * *' # 每天早8点自动同步上游
+  workflow_dispatch: # 支持手动触发
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: 添加上游微软仓库
+        run: git remote add upstream https://github.com/microsoft/winget-pkgs.git
+      - name: 拉取上游全部更新
+        run: |
+          git fetch upstream
+          git checkout main
+          git reset --hard upstream/main
+          git push origin main --force
+      - name: 同步到Gitee
+        uses: Yikun/hub-mirror-action@master
+        with:
+          src: github/${{ github.repository_owner }}/winget-pkgs
+          dst: gitee/你的Gitee用户名/winget-pkgs
+          dst_key: ${{ secrets.GITEE_SSH_PRIVATE }}
+          dst_token: ${{ secrets.GITEE_TOKEN }}
