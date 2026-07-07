@@ -36,9 +36,6 @@ jobs:
       - name: Push Gitee
         run: |
           git remote remove gitee || true
-          git remote add gitee \
-          git@gitee.com:你的用户名/winget-pkgs.git
+          git remote add gitee git@gitee.com:meizhonghao/winget-pkgs.git
           git push gitee main --force
-
-
           git push gitee --tags --force
