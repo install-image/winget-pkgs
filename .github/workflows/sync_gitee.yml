@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Sync repository
         env:
-          SOURCE_REPO: https://github.com/microsoft/winget-pkgs
+          SOURCE_REPO: https://gh.jasonzeng.dev/https://github.com/microsoft/winget-pkgs
           TARGET_REPO: https://oauth2:${{ secrets.GITEE_TOKEN }}@gitee.com/meizhonghao/winget-pkgs.git
 
         run: |
