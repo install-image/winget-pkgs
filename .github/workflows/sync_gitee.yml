@@ -21,7 +21,7 @@ jobs:
         run: |
           echo "开始同步 GitHub → Gitee"
 
-          git clone --bare --depth=1 "$SOURCE_REPO" repo.git
+          git clone --mirror "$SOURCE_REPO" repo.git
 
           cd repo.git
 
